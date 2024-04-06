@@ -2,8 +2,6 @@
 #include "Head.h"
 
 
-//координаты, заполняем вектор точек, в которые можем прийти, потом перебором подбираем номера
-
 double field_cell_size = 20;
 
 void king_solve(vector<point> &Field);
@@ -21,7 +19,7 @@ void draw_knight(point a) {
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, 'K');
 }
 
-void draw_num(point a, int n){  //костыли? не думаю.
+void draw_num(point a, int n){  
 	if (n < 10) {
 		glRasterPos2i(a.x - 3, a.y - 5);
 		glColor3f(1, 0, 0);
@@ -65,7 +63,7 @@ void solve5() {
 	display();
 	int n;
 	cin >> n;
-	Field_size = (1 + (n - 1)) * (n - 1);  //нереально важные устанвоки для работы всего задания, без них кина не будет
+	Field_size = (1 + (n - 1)) * (n - 1);  
 	Field_size += n;
 	field_cell_size = H / ((n - 1) * 2 + 1);
 	vector<point> Field(Field_size);
@@ -76,7 +74,7 @@ void solve5() {
 	int cnt = 0, prev_cnt = 1;
 	draw_cell(Field[0]);
 	draw_num(Field[0], 0);
-	for (int i = 1; i < Field_size; i++) {   //Рисование поля(ебейший говнокод, мб когда-нибудь я сделаю тут красоту, но пока не сильно хочется)
+	for (int i = 1; i < Field_size; i++) {  
 		if (cnt > 0) {
 			Field[i].y = Field[i - 1].y;
 			Field[i].x = Field[i - 1].x + field_cell_size;
@@ -102,8 +100,7 @@ void solve5() {
 	glutSwapBuffers();
 	glFlush();
 }
-void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то что работает не должно работать, но оно работает потому что полтора литра светлого нефильтрованного так решили
-	int king_pos;
+void king_solve(vector<point> &Field){  
 	point king_posit;
 	cin >> king_pos;
 	if (king_pos > Field_size || king_pos < 0) {
@@ -114,7 +111,7 @@ void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то 
 		}
 	}
 
-	king_posit.x = Field[king_pos].x; //нереально важные установки перед поиском всех клеток на 2 хода
+	king_posit.x = Field[king_pos].x; 
 	king_posit.y = Field[king_pos].y;
 	draw_king(king_posit);
 	vector<point> Kings_moves(19);
@@ -124,7 +121,7 @@ void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то 
 	bool good = 1;
 	glColor3f(0, 1, 0);
 
-	for (int i = 1; i < 19; i++){ //Нахождение и рисование всех ходов короля
+	for (int i = 1; i < 19; i++){ 
 		if (cnt > 0) {
 			Kings_moves[i].y = Kings_moves[i - 1].y;
 			Kings_moves[i].x = Kings_moves[i - 1].x+field_cell_size;
@@ -159,7 +156,7 @@ void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то 
 		}
 	}
 
-	point point_to_go; //нереально важные установки перед поиском пути, они костыльные, но рабочие
+	point point_to_go; 
 	point_to_go.x = Field[king_to_go].x;
 	point_to_go.y = Field[king_to_go].y;
 	vector<point> king_point_moves;
@@ -169,7 +166,7 @@ void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то 
 	king_point_moves.push_back(Curr);
 	bool x_move = 1;
 
-	while (abs(Curr.x - point_to_go.x)>0 || abs(Curr.y - point_to_go.y) >0) {  //костыльный но рабочий алгос поиска наименьшего пути
+	while (abs(Curr.x - point_to_go.x)>0 || abs(Curr.y - point_to_go.y) >0) {  
 		if (abs(Curr.x - point_to_go.x) >0 && abs(Curr.y - point_to_go.y) >0) {
 			if (Curr.x > point_to_go.x) {
 				if (Curr.y > point_to_go.y) {
@@ -241,7 +238,7 @@ void king_solve(vector<point> &Field){  //оно не совсем работает как надо, а то 
 	glFlush();
 }
 
-void knight_moves_point(vector<point> &knight_move, point position, int k) { //тупа перебираем все варианты
+void knight_moves_point(vector<point> &knight_move, point position, int k) { 
 	point move;
 	move.x = position.x - field_cell_size * 2.5;
 	move.y = position.y + field_cell_size;
@@ -269,7 +266,7 @@ void knight_moves_point(vector<point> &knight_move, point position, int k) { //т
 }
 
 
-void knight_solve(vector<point> &Field) {  //неведомая ебаная хуета часть 2.
+void knight_solve(vector<point> &Field) {  
 	int knight_posit;
 	cin >> knight_posit;
 	point knight_pos;
@@ -277,14 +274,14 @@ void knight_solve(vector<point> &Field) {  //неведомая ебаная хуета часть 2.
 	knight_pos.y = Field[knight_posit].y;
 	draw_knight(knight_pos);
 	vector<point> knight_first_move;
-	knight_moves_point(knight_first_move, knight_pos, 0); //получаем все точки куда можем прийти за 1 ход
+	knight_moves_point(knight_first_move, knight_pos, 0); 
 	vector<point> knight_second_move;
 	
 	for (int i = 0; i < 12; i++) {
-		knight_moves_point(knight_second_move, knight_first_move[i], i); //для каждой точки с 1 хода перебираем все возможные ходы
+		knight_moves_point(knight_second_move, knight_first_move[i], i); 
 	}
 	glColor3f(0, 1, 0);
-	for (int i = 0; i < knight_second_move.size(); i++) { //рисуем те точки которые в поле попадают
+	for (int i = 0; i < knight_second_move.size(); i++) { 
 		for (int j = 0; j < Field_size; j++) {
 			if (knight_second_move[i].x == Field[j].x && knight_second_move[i].y == Field[j].y) {
 				draw_cell(knight_second_move[i]);
@@ -303,9 +300,7 @@ void knight_solve(vector<point> &Field) {  //неведомая ебаная хуета часть 2.
 	knight_moves_point(new_move, knight_pos, 0);
 	double diff = 10;
 	point position = knight_pos, pos_prev = knight_pos;
-	/*Тут была идея перебора минимальный расстояний. То есть для каждой точки мы будем проверять расстояние до
-	необходимой, и в точку с меньшим расстоянием двигаться, а потом для нее повторить этот цикл.
-	но видать не судьба и ничего не работает*/
+
 	while (diff > 0) {
 		for (int i = 0; i < 12; i++) {
 			if (sqrt(distance_point(new_move[i], to_go)) < diff) {
@@ -331,7 +326,6 @@ void problem_5(int argc, char**& argv) {
 	glutInitWindowSize(W, H);
 	glutCreateWindow("Problem 5");
 	glutDisplayFunc(solve5);
-	//glutKeyboardFunc(keyboard_5);
 	glutReshapeFunc(reshape);
 	init();
 	glutMainLoop();
